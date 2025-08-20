@@ -11,7 +11,11 @@ import TrackDetailScreen from './src/screens/TrackDetailScreen'
 import TrackListScreen from './src/screens/TrackListScreen'
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 
+import Feather from '@expo/vector-icons/Feather';
+
 import { Provider as AuthProvider, Context as AuthContext } from './src/context/AuthContext';
+import { Provider as LocationProvider } from './src/context/LocationContext'
+import { Provider as TrackProvider } from './src/context/TrackContext'
 import { navigationRef } from './src/RootNavigation';
 
 const AuthStack = createStackNavigator();
@@ -29,14 +33,35 @@ const TabNavigator = () => (
   <Tab.Navigator
     tabBarPosition='bottom'
     screenOptions={{
-      tabBarStyle: { backgroundColor: 'black' },
-      tabBarLabelStyle: { fontSize: 14, color: '#fff' },
+      tabBarStyle: { backgroundColor: 'white', borderTopColor: 'black', borderTopWidth: 1 },
+      tabBarLabelStyle: { fontSize: 16, color: 'black' },
       tabBarIndicatorStyle: { backgroundColor: '#fff' },
     }}
   >
-    <Tab.Screen name="TrackList" component={TrackListScreen} />
-    <Tab.Screen name="CreateTrack" component={TrackCreateScreen} />
-    <Tab.Screen name="Account" component={AccountScreen} />
+    <Tab.Screen 
+      name="TrackList" 
+      component={TrackListScreen} 
+      options={{ 
+        title: 'Tracks', 
+        tabBarIcon: () => <Feather name="list" size={24} color="black" />
+      }} 
+    />
+    <Tab.Screen 
+      name="CreateTrack" 
+      options={{ 
+        title: 'Add Track', 
+        tabBarIcon: () => <Feather name="plus-circle" size={24} color="black" /> 
+      }} 
+      component={TrackCreateScreen} 
+    />
+    <Tab.Screen 
+      name="Account" 
+      component={AccountScreen} 
+      options={{ 
+        title: 'Account', 
+        tabBarIcon: () => <Feather name="settings" size={24} color="black" />
+      }} 
+    />
   </Tab.Navigator>
 )
 
@@ -72,8 +97,12 @@ const RootNavigator = () => {
 
 export default function App() {
   return (
-    <AuthProvider>
-        <RootNavigator ref={navigationRef} />
-    </AuthProvider>
+    <TrackProvider>
+      <LocationProvider>
+        <AuthProvider>
+            <RootNavigator ref={navigationRef} />
+        </AuthProvider>
+      </LocationProvider>
+    </TrackProvider>
   )
 }

@@ -1,13 +1,42 @@
-import React from 'react'
-import { Text, StyleSheet } from 'react-native'
+import React, { useContext } from 'react'
+import { StyleSheet } from 'react-native'
+import { Text } from 'react-native-elements'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { Context as TrackContext } from '../context/TrackContext'
+import MapView, { Polyline } from 'react-native-maps'
 
-const TrackDetailScreen = () => {
+const TrackDetailScreen = ({ navigation, route }) => {
+    const { state } = useContext(TrackContext)
+    const _id = route.params._id
+
+    const track = state.find(t => t._id === _id)
+    const initialCoords = track.locations[0].coords
+
     return <SafeAreaView>
-        <Text style={{ fontSize: 48 }}>Track Detail Screen</Text>
+        <Text h3 style={styles.title}>{track.name}</Text>
+        <MapView
+            initialRegion={{
+                longitudeDelta: 0.01,
+                latitudeDelta: 0.01,
+                ...initialCoords
+            }}
+            style={styles.map}
+        >
+            <Polyline 
+                coordinates={track.locations.map(loc => loc.coords)}
+            />
+        </MapView>
     </SafeAreaView>
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    map: {
+        height: 300
+    },
+    title: {
+        textAlign: 'center',
+        marginVertical: 15
+    }
+})
 
 export default TrackDetailScreen
